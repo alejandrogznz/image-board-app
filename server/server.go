@@ -1,20 +1,15 @@
-
 package main
 
 import (
 	"os"
 	"log/slog"
-	//"database/sql"
 	"net/http"
-//	"encoding/json"
-	_ "github.com/go-sql-driver/mysql"	
 	"github.com/joho/godotenv"
-	//"image-board/model"
-//	"image-board/handlers"
+	_ "github.com/go-sql-driver/mysql"	
+
 	"image-board/middleware"
 	"image-board/sqldb"
 	"image-board/controllers"
-
 )
 
 var (
@@ -32,9 +27,11 @@ func main() {
 	db := sqldb.ConnectDB()
 	h := controllers.NewBaseHandler(db)
 	logger.Info("Successfully connected to database")
+
 	// Open the server
 	router := http.NewServeMux()
 	router.HandleFunc("GET /", h.HelloWorld)
+	router.HandleFunc("GET /users", h.GetUsers)
 	server := http.Server{
 		Addr:	 ":8000",
 		Handler: middleware.Logging(router),
